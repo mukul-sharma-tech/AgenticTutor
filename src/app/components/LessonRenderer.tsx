@@ -180,10 +180,10 @@ interface LessonRendererProps {
 }
 
 const LessonRenderer: React.FC<LessonRendererProps> = ({ code }) => {
-  const cleanCode = code
+const cleanCode = code
     .replace(/import\s+.*?from\s+['"].*?['"];?\s*/g, "")
-    .replace(/^[\s`]*(tsx)?\n?/, "")
-    .replace(/\n?[\s`]*$/, "")
+    .replace(/^[\s`]*(tsx)?\s*|^\s*```(?:typescript)?\s*/g, "")
+    .replace(/\n?[\s`]*$/g, "")
     .trim();
 
   return (
