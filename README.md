@@ -108,42 +108,89 @@ Fetches code → passes to `<LessonRenderer />`.
 
 ---
 
-## 🛡️ Defense-in-Depth Architecture
+TSX Validation + Auto-Retry System
 
-A 3-layer system ensures safety from AI-generated bugs.
+(Recent major reliability upgrade)
 
----
+✔ True TSX Validation
 
-### **🔰 Layer 1: Gatekeeper (Backend Prompting & Fallbacks)**
+The backend now validates generated code using esbuild transpilation.
+If the TSX cannot compile → generation attempt is discarded.
 
-**File:** `app/api/inngest/route.ts`
+✔ Automatic 3× Retry Loop
 
-- Strict prompt rules  
-- Multi-key fallback  
-- Model fallback (2.5 → 2.0)  
-- Rudimentary TSX validation
+Generation runs inside:
 
----
+for (let attempt = 1; attempt <= 3; attempt++)
 
-### **🧪 Layer 2: Safety Net (Frontend Sandbox)**
 
-**File:** `LessonRenderer.tsx`
+Meaning the system will:
 
-- Code cleaning  
-- Sandboxed evaluation with `react-live`  
-- `<LiveError />` catches runtime errors  
-- App never crashes
+Regenerate the TSX
 
----
+Validate via esbuild
 
-### **📦 Layer 3: Black Box (Observability)**
+Repeat up to three times, silently
 
-**File:** `app/api/inngest/route.ts`
+Users simply see “Generating…”, never error noise.
 
-- LangSmith trace logging  
-- Allows debugging & SYSTEM_PROMPT improvements  
+✔ Fail-Safe Mode
 
----
+Only if:
+❌ All 3 attempts fail
+❌ Model fallback fails
+
+Then → status = "failed"
+Frontend shows a clean error message.
+
+This upgrade makes the system EXTREMELY reliable for AI-generated code.
+
+.
+
+🛡️ Defense-in-Depth (4 Layers)
+🟣 Layer 0 — Backend TSX Validation (NEW)
+
+esbuild transpilation
+
+Syntax-level correctness
+
+Auto-retries
+
+Fallback model
+
+Blocks all invalid TSX before DB write
+
+🔰 Layer 1 — Backend Gatekeeper
+
+Strict system prompts
+
+Controlled generation
+
+Output sanitization
+
+Safety heuristics
+
+Structured output formatting
+
+🧪 Layer 2 — Frontend Sandbox Execution
+
+react-live sandbox
+
+Fast refresh isolation
+
+Live runtime error capture
+
+No access to app/global scope
+
+📦 Layer 3 — Trace Logging (LangSmith)
+
+View full execution
+
+Inspect failures
+
+Optimize prompts
+
+Debug generation consistency
 
 ## 🛠️ Local Development
 
