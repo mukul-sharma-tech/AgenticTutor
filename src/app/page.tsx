@@ -22,16 +22,16 @@ export default async function Home() {
     <main className="relative min-h-screen bg-transparent text-gray-800 overflow-hidden">
       <ThreeBackground /> {/* 👈 your 3D background */}
 
-      <div className="relative z-10 w-full max-w-4xl mx-auto p-6 md:p-10">
+      <div className="relative z-10 w-full max-w-5xl mx-auto p-6 md:p-10">
         <h1 className="text-4xl font-extrabold mb-8 text-indigo-700 text-center drop-shadow-md">
           🌸 Digital Lessons Generator
         </h1>
 
-        <div className="mb-10">
+        <div className="max-w-4xl mb-10 mx-auto">
           <LessonForm />
         </div>
 
-        <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-sm border border-indigo-100">
+        <div className="bg-wXhite/70 backdrop-blur-sm rounded-2xl p-6 shadow-sm border border-indigo-100">
           <LessonsTable initialLessons={lessons || []} />
         </div>
       </div>

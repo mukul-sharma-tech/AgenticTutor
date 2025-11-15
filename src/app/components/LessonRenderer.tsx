@@ -22,7 +22,7 @@
 //   //   .replace(/import\s+.*?from\s+['"].*?['"];?\s*/g, "")
 //   //   .trim();
 
-    
+
 //   // Start with the raw code
 //   let cleanCode = code;
 
@@ -180,7 +180,7 @@ interface LessonRendererProps {
 }
 
 const LessonRenderer: React.FC<LessonRendererProps> = ({ code }) => {
-const cleanCode = code
+  const cleanCode = code
     .replace(/import\s+.*?from\s+['"].*?['"];?\s*/g, "")
     .replace(/^[\s`]*(tsx)?\s*|^\s*```(?:typescript)?\s*/g, "")
     .replace(/\n?[\s`]*$/g, "")
@@ -192,9 +192,9 @@ const cleanCode = code
       <LiveError className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-300 p-3 rounded-lg mb-4 font-mono text-sm whitespace-pre-wrap overflow-auto" />
 
       {/* 🧩 Preview Area (Lightweight, No Extra Frame) */}
-<div className="rounded-xl overflow-hidden border border-gray-700 bg-gradient-to-br from-gray-800 to-gray-900 text-white shadow-md p-4 sm:p-6 md:p-8 w-full transition-all duration-300">
-  <LivePreview />
-</div>
+      <div className="rounded-xl overflow-hidden border border-gray-700 bg-gradient-to-br from-gray-800 to-gray-900 text-white shadow-md p-4 sm:p-6 md:p-8 w-full transition-all duration-300">
+        <LivePreview />
+      </div>
     </LiveProvider>
   );
 };

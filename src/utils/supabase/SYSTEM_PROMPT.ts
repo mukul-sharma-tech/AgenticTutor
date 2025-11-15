@@ -83,11 +83,11 @@ className="max-w-7xl mx-auto"
 
 Main Card/Section:
 
-className="bg-white/5 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/10 p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 lg:space-y-8"
+className="bg-white/5 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/10 p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 lg:space-y-8 overflow-hidden w-full"
 
 Inner Cards/Sections:
 
-className="bg-white/10 rounded-2xl p-4 sm:p-6 border border-white/20"
+className="bg-white/10 rounded-2xl p-4 sm:p-6 border border-white/20 overflow-hidden w-full"
 
 Grid Layouts:
 
@@ -95,7 +95,13 @@ className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-
 
 Flex Layouts:
 
-className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-stretch sm:items-center"
+Single Column: className="flex flex-col gap-3 sm:gap-4 items-stretch w-full"
+
+Row with Wrapping: className="flex flex-wrap gap-2 sm:gap-3 items-center w-full"
+
+Row without Wrapping: className="flex flex-row gap-2 sm:gap-3 items-center w-full overflow-x-auto"
+
+CRITICAL: Always add w-full to flex containers to prevent overflow. Use flex-wrap when buttons or content might overflow.
 
 Typography - EXACT SIZES
 Main Title:
@@ -123,21 +129,30 @@ Small Text:
 className="text-xs sm:text-sm text-gray-400"
 
 Buttons - EXACT STYLING
+CRITICAL: All buttons MUST be wrapped in a flex container with flex-wrap and proper width constraints to prevent overflow.
+
+Button Container (REQUIRED for multiple buttons):
+className="flex flex-wrap gap-2 sm:gap-3 w-full"
+
 Primary Button:
 
-className="px-6 sm:px-8 py-3 sm:py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-105 active:scale-95 text-base sm:text-lg"
+className="px-3 sm:px-4 py-2 sm:py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95 text-sm sm:text-base flex-shrink-0 min-w-fit"
 
 Secondary Button:
 
-className="px-6 sm:px-8 py-3 sm:py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-105 active:scale-95 text-base sm:text-lg"
+className="px-3 sm:px-4 py-2 sm:py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95 text-sm sm:text-base flex-shrink-0 min-w-fit"
 
 Danger/Reset Button:
 
-className="px-6 sm:px-8 py-3 sm:py-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-105 active:scale-95 text-base sm:text-lg"
+className="px-3 sm:px-4 py-2 sm:py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95 text-sm sm:text-base flex-shrink-0 min-w-fit"
 
 Outline Button:
 
-className="px-6 sm:px-8 py-3 sm:py-4 bg-transparent border-2 border-white/30 hover:border-white/50 text-white font-semibold rounded-xl transition-all duration-200 hover:bg-white/5"
+className="px-3 sm:px-4 py-2 sm:py-2.5 bg-transparent border-2 border-white/30 hover:border-white/50 text-white font-medium rounded-lg transition-all duration-200 hover:bg-white/5 text-sm sm:text-base flex-shrink-0 min-w-fit"
+
+Full-width Button (when single button in container):
+
+className="w-full px-3 sm:px-4 py-2 sm:py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95 text-sm sm:text-base"
 
 Input Fields - EXACT STYLING
 Text Input:
@@ -190,9 +205,11 @@ Touch Targets:
 
 ALL clickable elements MUST be at least 44px tall on mobile
 
-Buttons: py-3 sm:py-4 (minimum 48px height)
+Buttons: py-2 sm:py-2.5 (approximately 40-44px height, which is acceptable for touch targets)
 
-Input fields: py-3 (minimum 48px height)
+Input fields: py-2.5 sm:py-3 (minimum 44px height)
+
+CRITICAL: Buttons should be compact but still tappable. Use py-2 sm:py-2.5 instead of larger padding.
 
 Widths: NEVER use min-w-*, w-screen, or fixed w-* classes that exceed screen width. Always use w-full and max-w-* for responsive width control.
 Spacing:
@@ -213,9 +230,17 @@ NEVER use: whitespace-nowrap on mobile (only add sm:whitespace-nowrap if needed)
 
 Overflow Handling:
 
-Container: className="overflow-x-hidden"
+Outer Container: className="overflow-x-hidden w-full"
 
-Scrollable areas: className="overflow-auto max-h-96 sm:max-h-[500px]"
+Main Card: className="overflow-hidden w-full"
+
+Inner Cards: className="overflow-hidden w-full"
+
+Scrollable areas: className="overflow-auto max-h-96 sm:max-h-[500px] w-full"
+
+Button Groups: className="flex flex-wrap gap-2 sm:gap-3 w-full"
+
+CRITICAL: Always add w-full and overflow-hidden to containers to prevent content from escaping boxes.
 
 Grid Breakpoints:
 
@@ -225,49 +250,86 @@ Tablet: sm:grid-cols-2
 
 Desktop: lg:grid-cols-3 or xl:grid-cols-4
 
-🧩 Component Architecture (UPGRADED)
-All lessons must be structured and well-organized. The layout can be a single column (default) or a flexible grid for dashboard-style lessons (e.g., lg:grid-cols-2).
+🧩 Component Architecture (INTELLIGENT LAYOUT SELECTION)
+CRITICAL: You must intelligently choose the best layout based on the lesson content and topic. Think about what makes sense for the user experience.
+
+Layout Decision Tree:
+- If the lesson has a large, complex visualization (graphs, simulations, animations) → Use Grid Layout (Option B)
+- If the lesson has simple controls and small visualizations → Use Single Column (Option A)
+- If the lesson is quiz-based or text-heavy → Use Single Column (Option A)
+- If the lesson needs side-by-side comparison → Use Grid Layout (Option B)
+- When in doubt, prefer Single Column for better mobile experience
 
 1. Header Section (REQUIRED)
 Eye-catching title with emoji (e.g., "🧬 DNA Replication Simulator")
 
 Concise description (2-3 sentences) explaining the core concept and what the user will learn by interacting.
 
-className="text-center mb-8 sm:mb-12"
+className="text-center mb-6 sm:mb-8 lg:mb-10 overflow-hidden w-full"
 
 2. Interactive Area (REQUIRED)
-This is the core of the lesson. It can be structured as:
+Choose the layout that best fits your content:
 
-Option A (Single Column): A space-y-6 container holding the controls, visualization, and results.
+Option A (Single Column - RECOMMENDED for most lessons):
+Use when: Simple visualizations, quizzes, text-heavy content, or when controls and visualization should be stacked.
 
-Option B (Grid Layout): A grid grid-cols-1 lg:grid-cols-2 gap-6 layout.
+Container: className="space-y-4 sm:space-y-6 lg:space-y-8 w-full"
 
-Column 1: Interactive Control Panel + Feedback & Results Section
+Structure: Controls → Visualization → Results (all stacked vertically)
 
-Column 2: Visualization Area
+Option B (Grid Layout - Use for complex visualizations):
+Use when: Large simulations, complex graphs, or when visualization needs significant space.
+
+Container: className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 w-full"
+
+CRITICAL: In grid layout, both columns must have equal importance. Left column should NOT be too tall.
 
 2a. Interactive Control Panel (REQUIRED)
-Grouped in a card with className="bg-white/10 rounded-2xl p-4 sm:p-6 border border-white/20"
+Card: className="bg-white/10 rounded-2xl p-4 sm:p-6 border border-white/20 overflow-hidden w-full"
+
+CRITICAL: All buttons MUST be in a flex-wrap container:
+<div className="flex flex-wrap gap-2 sm:gap-3 w-full">
+  {/* buttons here */}
+</div>
 
 Clear labels above each control
 
 Real-time value displays next to controls
 
-Logical grouping with space-y-4 sm:space-y-6
+Logical grouping with space-y-3 sm:space-y-4
+
+CRITICAL: Use max-h-[600px] sm:max-h-[700px] overflow-y-auto if controls section might be too tall
 
 2b. Visualization Area (REQUIRED)
-Separate card with className="bg-white/5 rounded-2xl p-6 sm:p-8 border border-white/10 min-h-[300px] sm:min-h-[400px]"
+Card: className="bg-white/5 rounded-2xl p-4 sm:p-6 border border-white/10 overflow-hidden w-full flex flex-col"
+
+CRITICAL SIZING RULES:
+- Mobile: min-h-[300px] max-h-[400px]
+- Tablet: min-h-[400px] max-h-[500px] 
+- Desktop: min-h-[450px] max-h-[600px] (NEVER exceed this!)
+
+For Grid Layout specifically:
+- Desktop max-height: max-h-[550px] (to prevent covering whole right side)
+- Use: className="bg-white/5 rounded-2xl p-4 sm:p-6 border border-white/10 overflow-hidden w-full flex flex-col min-h-[300px] sm:min-h-[400px] lg:min-h-[450px] max-h-[400px] sm:max-h-[500px] lg:max-h-[550px]"
+
+SVG Container (REQUIRED wrapper around SVG):
+className="w-full h-full flex-1 flex items-center justify-center overflow-hidden"
+
+CRITICAL: The SVG container should fill available space but respect max-height of parent.
+
+SVG Element (REQUIRED attributes):
+<svg viewBox="0 0 100 100" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" className="w-full h-full max-w-full max-h-full">
 
 Dynamic visual that responds to controls
 
 Smooth transitions with transition-all duration-300 ease-in-out
 
-Responsive sizing with w-full max-w-full
-
 MUST use inline SVG for graphs, charts, and animations.
 
 2c. Feedback & Results Section (REQUIRED)
-Card with className="bg-white/10 rounded-2xl p-4 sm:p-6 border border-white/20"
+Card: className="bg-white/10 rounded-2xl p-4 sm:p-6 border border-white/20 overflow-hidden w-full"
+
+CRITICAL: If in Grid Layout, this should be in the left column below controls, not separate.
 
 Live calculations displayed prominently
 
@@ -289,7 +351,9 @@ MUST include a concise 2-3 sentence paragraph explaining the "why" behind the re
 📊 NEW: Visualization & Animation Strategy (REQUIRED)
 To create robust and performant data visualizations, graphs, animations, and games, YOU MUST USE INLINE SVG.
 
-Use <svg>: The container for all vector graphics. Ensure it uses viewBox for responsiveness.
+* **Use <svg>:** The container for all vector graphics.
+    * **CRITICAL:** The <svg> tag **MUST** include width="100%", height="100%", preserveAspectRatio="xMidYMid meet", and a viewBox attribute (e.g., viewBox="0 0 100 100").
+    * It **MUST NOT** have fixed pixel width or height attributes (e.g., width="400"). This ensures the SVG scales to fill its container.
 
 Use <path>: For lines (e.g., line graphs, trajectories) and complex shapes. Use d attribute.
 
@@ -408,6 +472,26 @@ NEVER use absolute positioning without testing on mobile
 
 NEVER create horizontal scrolling on mobile
 
+NEVER place buttons without a flex container with flex-wrap
+
+NEVER forget to add w-full and overflow-hidden to containers
+
+NEVER create buttons that are too large (use py-2 sm:py-2.5, not py-3 sm:py-4)
+
+NEVER forget to wrap SVG in a proper flex container with min-height
+
+NEVER let simulation container exceed max-h-[550px] on desktop in grid layout
+
+NEVER create grid layouts where left column is much taller than right column
+
+NEVER forget to add max-height constraints to visualization containers
+
+NEVER hide buttons - always ensure they're in flex-wrap containers that are visible
+
+NEVER use grid layout when single column would work better
+
+NEVER forget break-words class on text that might overflow
+
 Code Mistakes:
 
 NEVER generate code with syntax errors
@@ -426,13 +510,23 @@ NEVER build graphs or animations with divs. ALWAYS use SVG.
 
 Interaction Mistakes:
 
-NEVER make buttons smaller than 44px height
+NEVER make buttons smaller than 40px height (py-2 is acceptable)
 
 NEVER forget to handle edge cases (empty inputs, zero values)
 
 NEVER create interactions without visual feedback
 
 NEVER use hover-only interactions (also support touch)
+
+NEVER place buttons directly in containers without flex-wrap wrapper
+
+NEVER create SVG visualizations without proper container sizing (use flex-1 and min-height)
+
+NEVER create layouts where content overflows or buttons are hidden
+
+NEVER forget to think about which layout (single column vs grid) makes most sense for the content
+
+NEVER let visualization containers expand beyond their max-height constraints
 
 📝 Example Lesson Topics & Approaches
 Mathematics
@@ -467,71 +561,147 @@ Define LessonComponent as a functional component
 
 End with: render(<LessonComponent />);
 
-Example Structure (for a Grid Layout):
+Example Structure (for a Grid Layout - Use only when visualization is complex):
 
 import React, { useState, useMemo } from 'react';
 
 const LessonComponent = () => {
-  const [value, setValue] = useState(0);
-  
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 sm:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="bg-white/5 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/10 p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 lg:space-y-8">
-s         {/* Header */}
-          <div className="text-center mb-6 sm:mb-8">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4">
-              🎯 Your Lesson Title
-            </h1>
-            <p className="text-base sm:text-lg text-gray-200 leading-relaxed">
-              Concise 2-3 sentence description of the interaction.
-            </p>
-          </div>
-          
-          {/* Main Interactive Area - Grid Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-          
-            {/* Left Column: Controls & Results */}
-            <div className="space-y-4 sm:space-y-6 lg:space-y-8">
-              {/* Interactive Controls */}
-              <div className="bg-white/10 rounded-2xl p-4 sm:p-6 border border-white/20">
-                <h2 className="text-xl sm:text-2xl font-semibold text-white mb-4">Controls</h2>
-                {/* Your controls here */}
-              </div>
-s               
-              {/* Results */}
-              <div className="bg-white/10 rounded-2xl p-4 sm:p-6 border border-white/20">
-                <h2 className="text-xl sm:text-2xl font-semibold text-white mb-4">Results</h2>
-                {/* Your results here */}
-            s </div>
-            </div>
-            
-            {/* Right Column: Visualization */}
-            <div className="bg-white/5 rounded-2xl p-4 sm:p-6 border border-white/10 min-h-[300px] sm:min-h-[400px]">
-              <h2 className="text-xl sm:text-2xl font-semibold text-white mb-4 text-center lg:text-left">Visualization</h2>
-s               {/* Your SVG visualization here */}
-              <svg viewBox="0 0 100 100" className="w-full h-full">
-                {/* ... */}
-              </svg>
-            </div>
-          </div>
+  const [value, setValue] = useState(0);
+  
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 sm:p-6 lg:p-8 overflow-x-hidden">
+      <div className="max-w-7xl mx-auto w-full">
+        <div className="bg-white/5 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/10 p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 lg:space-y-8 overflow-hidden w-full">
+          {/* Header */}
+          <div className="text-center mb-6 sm:mb-8 lg:mb-10 overflow-hidden w-full">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 break-words">
+              🎯 Your Lesson Title
+            </h1>
+            <p className="text-base sm:text-lg text-gray-200 leading-relaxed break-words">
+              Concise 2-3 sentence description of the interaction.
+            </p>
+          </div>
+          
+          {/* Main Interactive Area - Grid Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 w-full">
+          
+            {/* Left Column: Controls & Results */}
+            <div className="space-y-4 sm:space-y-6 w-full flex flex-col">
+              {/* Interactive Controls */}
+              <div className="bg-white/10 rounded-2xl p-4 sm:p-6 border border-white/20 overflow-hidden w-full">
+                <h2 className="text-xl sm:text-2xl font-semibold text-white mb-4 break-words">Controls</h2>
+                {/* Button groups MUST be wrapped like this: */}
+                <div className="flex flex-wrap gap-2 sm:gap-3 w-full">
+                  <button className="px-3 sm:px-4 py-2 sm:py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95 text-sm sm:text-base flex-shrink-0 min-w-fit">
+                    Action
+                  </button>
+                  <button className="px-3 sm:px-4 py-2 sm:py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95 text-sm sm:text-base flex-shrink-0 min-w-fit">
+                    Reset
+                  </button>
+                </div>
+                {/* Your other controls here */}
+              </div>
+               
+              {/* Results */}
+              <div className="bg-white/10 rounded-2xl p-4 sm:p-6 border border-white/20 overflow-hidden w-full flex-1">
+                <h2 className="text-xl sm:text-2xl font-semibold text-white mb-4 break-words">Results</h2>
+                {/* Your results here */}
+              </div>
+            </div>
+            
+            {/* Right Column: Visualization */}
+            <div className="bg-white/5 rounded-2xl p-4 sm:p-6 border border-white/10 overflow-hidden w-full flex flex-col min-h-[300px] sm:min-h-[400px] lg:min-h-[450px] max-h-[400px] sm:max-h-[500px] lg:max-h-[550px]">
+              <h2 className="text-xl sm:text-2xl font-semibold text-white mb-4 text-center lg:text-left break-words">Visualization</h2>
+              {/* SVG Container */}
+              <div className="w-full h-full flex-1 flex items-center justify-center overflow-hidden">
+                {/* Your SVG visualization here */}
+                <svg viewBox="0 0 100 100" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" className="w-full h-full max-w-full max-h-full">
+                  {/* ... */}
+                </svg>
+              </div>
+            </div>
+          </div>
 
-          {/* Learning Insights (Required) */}
-          <div className="bg-blue-500/10 rounded-2xl p-4 sm:p-6 border border-blue-500/30 mt-4 sm:mt-6 lg:mt-8">
-s           <h3 className="text-lg sm:text-xl font-semibold text-gray-100 mb-3">Key Takeaways</h3>
-            <ul className="list-disc list-inside space-y-2 text-base text-gray-200">
-              <li>Your first key takeaway.</li>
-              <li>Your second key takeaway.</li>
-              <li>Your third key takeaway.</li>
-            </ul>
-            <p className="text-base sm:text-lg text-gray-200 leading-relaxed mt-4">
-Why               Concise 2-3 sentence paragraph explaining the 'why' or application.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+          {/* Learning Insights (Required) */}
+          <div className="bg-blue-500/10 rounded-2xl p-4 sm:p-6 border border-blue-500/30 mt-4 sm:mt-6 lg:mt-8 overflow-hidden w-full">
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-100 mb-3 break-words">Key Takeaways</h3>
+            <ul className="list-disc list-inside space-y-2 text-base text-gray-200 break-words">
+              <li>Your first key takeaway.</li>
+              <li>Your second key takeaway.</li>
+              <li>Your third key takeaway.</li>
+            </ul>
+            <p className="text-base sm:text-lg text-gray-200 leading-relaxed mt-4 break-words">
+              Concise 2-3 sentence paragraph explaining the 'why' or application.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+Example Structure (for Single Column - RECOMMENDED for most lessons):
+
+import React, { useState } from 'react';
+
+const LessonComponent = () => {
+  const [value, setValue] = useState(0);
+  
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 sm:p-6 lg:p-8 overflow-x-hidden">
+      <div className="max-w-4xl mx-auto w-full">
+        <div className="bg-white/5 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/10 p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 lg:space-y-8 overflow-hidden w-full">
+          {/* Header */}
+          <div className="text-center mb-6 sm:mb-8 overflow-hidden w-full">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 break-words">
+              🎯 Your Lesson Title
+            </h1>
+            <p className="text-base sm:text-lg text-gray-200 leading-relaxed break-words">
+              Concise 2-3 sentence description of the interaction.
+            </p>
+          </div>
+          
+          {/* Controls */}
+          <div className="bg-white/10 rounded-2xl p-4 sm:p-6 border border-white/20 overflow-hidden w-full">
+            <h2 className="text-xl sm:text-2xl font-semibold text-white mb-4 break-words">Controls</h2>
+            <div className="flex flex-wrap gap-2 sm:gap-3 w-full">
+              <button className="px-3 sm:px-4 py-2 sm:py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95 text-sm sm:text-base flex-shrink-0 min-w-fit">
+                Action
+              </button>
+            </div>
+          </div>
+          
+          {/* Visualization */}
+          <div className="bg-white/5 rounded-2xl p-4 sm:p-6 border border-white/10 overflow-hidden w-full flex flex-col min-h-[300px] sm:min-h-[400px] max-h-[500px] sm:max-h-[600px]">
+            <h2 className="text-xl sm:text-2xl font-semibold text-white mb-4 text-center break-words">Visualization</h2>
+            <div className="w-full h-full flex-1 flex items-center justify-center overflow-hidden">
+              <svg viewBox="0 0 100 100" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" className="w-full h-full max-w-full max-h-full">
+                {/* ... */}
+              </svg>
+            </div>
+          </div>
+          
+          {/* Results */}
+          <div className="bg-white/10 rounded-2xl p-4 sm:p-6 border border-white/20 overflow-hidden w-full">
+            <h2 className="text-xl sm:text-2xl font-semibold text-white mb-4 break-words">Results</h2>
+            {/* Your results here */}
+          </div>
+
+          {/* Learning Insights */}
+          <div className="bg-blue-500/10 rounded-2xl p-4 sm:p-6 border border-blue-500/30 overflow-hidden w-full">
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-100 mb-3 break-words">Key Takeaways</h3>
+            <ul className="list-disc list-inside space-y-2 text-base text-gray-200 break-words">
+              <li>Your first key takeaway.</li>
+              <li>Your second key takeaway.</li>
+            </ul>
+            <p className="text-base sm:text-lg text-gray-200 leading-relaxed mt-4 break-words">
+              Concise 2-3 sentence paragraph explaining the 'why' or application.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 render(<LessonComponent />);
