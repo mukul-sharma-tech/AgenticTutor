@@ -1,40 +1,275 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧠 Digital Lessons Generator
 
-## Getting Started
+A full-stack **Next.js** application built to solve the **“Digital Lessons”** challenge. Users enter a topic, and the system generates & renders a **fully interactive, AI-powered React (TSX) lesson** in real-time.
 
-First, run the development server:
+The project is architected with **decoupled background jobs**, **realtime updates**, **sandboxed rendering**, and **multi-layer reliability** to handle unpredictable AI output safely.
 
+---
+
+## 🚀 Tech Stack
+
+- **Framework:** Next.js 14 (App Router, Server Components)
+- **Database:** Supabase (Postgres)
+- **Realtime:** Supabase Realtime
+- **Backend Jobs:** Inngest (reliable background job generation)
+- **AI Models:** Google Gemini 2.5 Flash → fallback: 2.0 Flash
+- **AI Tracing:** LangSmith
+- **Renderer:** react-live (sandboxed TSX execution)
+- **Styling:** Tailwind CSS
+
+---
+
+## ✨ Key Features
+
+### 🔹 AI Lesson Generation  
+Input a topic (e.g., *“Pythagoras Theorem”*) → generate a complete interactive React component lesson.
+
+### 🔹 Decoupled Architecture  
+Inngest handles generation as a background job.  
+Users never wait — they get an instant “Generating…” status.
+
+### 🔹 Real-time UI  
+Supabase Realtime updates the lessons table instantly without refresh.
+
+### 🔹 Safe Sandboxed Rendering  
+AI-generated TSX is executed inside a `react-live` sandbox with error boundaries.
+
+### 🔹 Full Observability  
+LangSmith logs every generation with prompts, outputs, and errors.
+
+### 🔹 AI Model Fallback  
+If gemini-2.5-flash fails → gemini-2.0-flash is automatically tried.
+
+### 🔹 Robust Error Handling  
+Multi-layer system handles:
+- API failures  
+- RLS errors  
+- Bad AI code  
+- Runtime errors  
+
+### 🔹 Responsive UI  
+Mobile-first, clean, and fully responsive interface.
+
+---
+
+## 🔬 AI Tracing with LangSmith
+
+LangSmith provides trace logs for every AI run.
+
+### How to Share Traces:
+1. Open your LangSmith project (e.g., `lesson-generator`)
+2. Open any trace  
+3. Click **Share** → copy public link
+
+#### Example Traces:
+- **Successful Run:**  
+  _[PASTE YOUR PUBLIC LANGSMITH URL]_
+
+- **Failed Run:**  
+  _[PASTE YOUR PUBLIC LANGSMITH URL]_
+
+---
+
+## ⚙️ Architecture: Step-by-Step Flow
+
+### 1️⃣ Page Load (`/`)
+Next.js Server Component fetches lessons.  
+`<LessonsTable />` listens via Supabase Realtime.
+
+### 2️⃣ User Submit  
+User enters a topic → calls `/api/generate`.
+
+### 3️⃣ Kick-off (`/api/generate`)
+Creates a DB row (`status = "generating"`).  
+Sends an **Inngest event**.  
+Returns `202 Accepted` immediately.
+
+### 4️⃣ Realtime Update (Start)
+Supabase broadcasts INSERT → UI shows new lesson with “Generating…”
+
+### 5️⃣ Inngest Handshake  
+Inngest receives event → securely calls `/api/inngest`.
+
+### 6️⃣ Backend Brain (`/api/inngest`)
+- Starts traced function via LangSmith  
+- Calls Gemini (2.5 → fallback 2.0)  
+- Validates TSX format  
+- Updates lesson row with generated content  
+- Sets `status = "generated"`
+
+### 7️⃣ Realtime Update (Finish)
+Supabase broadcasts UPDATE → UI updates instantly
+
+### 8️⃣ Lesson Page (`/lessons/[id]`)
+Fetches code → passes to `<LessonRenderer />`.
+
+### 9️⃣ Sandboxed Rendering  
+`react-live` sanitizes, executes, and catches errors safely.
+
+---
+
+## 🛡️ Defense-in-Depth Architecture
+
+A 3-layer system ensures safety from AI-generated bugs.
+
+---
+
+### **🔰 Layer 1: Gatekeeper (Backend Prompting & Fallbacks)**
+
+**File:** `app/api/inngest/route.ts`
+
+- Strict prompt rules  
+- Multi-key fallback  
+- Model fallback (2.5 → 2.0)  
+- Rudimentary TSX validation
+
+---
+
+### **🧪 Layer 2: Safety Net (Frontend Sandbox)**
+
+**File:** `LessonRenderer.tsx`
+
+- Code cleaning  
+- Sandboxed evaluation with `react-live`  
+- `<LiveError />` catches runtime errors  
+- App never crashes
+
+---
+
+### **📦 Layer 3: Black Box (Observability)**
+
+**File:** `app/api/inngest/route.ts`
+
+- LangSmith trace logging  
+- Allows debugging & SYSTEM_PROMPT improvements  
+
+---
+
+## 🛠️ Local Development
+
+### 1. Clone & Install
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone ...
+bun install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Setup Guide
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 2. Create Supabase Project
+After creating your Supabase project, copy:
+- **Project URL**
+- **Anon Key**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Add them to your environment variables later.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+### 3. Run SQL (Create Table + RLS)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Run this SQL in **Supabase → SQL Editor**:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```sql
+-- Create the table
+CREATE TABLE public.lessons (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  created_at TIMESTAMPTZ DEFAULT now() NOT NULL,
+  outline TEXT,
+  status TEXT DEFAULT 'generating' NOT NULL,
+  content TEXT
+);
 
-## Deploy on Vercel
+-- Enable RLS
+ALTER TABLE public.lessons ENABLE ROW LEVEL SECURITY;
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+-- RLS Policies
+CREATE POLICY "Allow public read access" ON public.lessons FOR SELECT USING (true);
+CREATE POLICY "Allow public insert access" ON public.lessons FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow public update access" ON public.lessons FOR UPDATE USING (true) WITH CHECK (true);
+CREATE POLICY "Allow public delete access" ON public.lessons FOR DELETE USING (true);
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 4. Enable Realtime
+
+Go to:
+
+**Database → Replication → supabase_realtime → Add table → `lessons`**
+
+This enables real-time updates for the lessons table.
+
+---
+
+## 🌱 Environment Variables (`.env.local`)
+
+Create a `.env.local` file in the project root:
+```bash
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+GOOGLE_API_KEY=
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_API_KEY=
+INNGEST_DEV=true
+INNGEST_EVENT_KEY=inngest_dev_key
+```
 
 
 
-> npx inngest-cli dev  to start inngest locally
+---
+
+## ▶️ Run Dev Servers
+
+### Terminal 1 — Start Next.js
+```bash
+bun run dev
+```
+### Terminal 2 — Start Inngest Dev Server
+
+```bash
+npx inngest-cli dev
+```
+Inngest Dev Dashboard:  
+**http://localhost:8288**
+
+---
+
+# 🚀 Deployment (Vercel)
+
+### 1. Push the project to GitHub  
+### 2. Import the repository into Vercel  
+### 3. Add Environment Variables
+
+Add **all variables** from `.env.local` **except**:
+
+❌ `INNGEST_DEV`  
+❌ `INNGEST_EVENT_KEY` (dev key)
+
+These are used **only for local development**.
+
+---
+
+### 4. Set Up Inngest Production
+
+In **Inngest Dashboard → Create a Production Project**.
+
+You will receive two keys:
+
+INNGEST_EVENT_KEY=
+INNGEST_SIGNING_KEY=
+
+
+Add both of these at:  
+**Vercel → Project Settings → Environment Variables**
+
+---
+
+### 5. Deploy the Project  
+Click **Deploy** on Vercel.
+
+---
+
+### 6. Final Step — Set Inngest Endpoint URL
+
+Go to:
+
+**Inngest Cloud → Production Environment → Endpoint URL**
+
+Set this value to: https://your-app.vercel.app/api/inngest
