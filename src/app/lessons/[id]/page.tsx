@@ -357,7 +357,7 @@ import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import LessonRenderer from "@/app/components/LessonRenderer";
-import { ArrowLeft, Loader2, XCircle } from "lucide-react";
+import { ArrowLeft, Loader2, XCircle, GraduationCap } from "lucide-react";
 import ThreeBackground from "@/app/components/ThreeBackground";
 
 type LessonPageProps = { params: { id: string } };
@@ -398,6 +398,19 @@ export default async function LessonPage({ params }: LessonPageProps) {
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 tracking-tight bg-gradient-to-r from-blue-800 via-indigo-400 to-blue-800 text-transparent bg-clip-text leading-tight break-words">
             {toSentenceCase(lesson.outline)}
           </h1>
+
+          {/* Learn from 3D Teacher Button */}
+          {lesson.status === "generated" && (
+            <div className="mb-6">
+              <Link
+                href={`/lessons/${id}/explain`}
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+              >
+                <GraduationCap className="w-5 h-5" />
+                Learn from a Human-like Teacher
+              </Link>
+            </div>
+          )}
 
           {/* Lesson Content */}
           {lesson.status === "generating" && (
