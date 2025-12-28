@@ -24,7 +24,7 @@ export default async function Home() {
 
       <div className="relative z-10 w-full max-w-5xl mx-auto p-6 md:p-10">
         <h1 className="text-4xl font-extrabold mb-8 text-indigo-700 text-center drop-shadow-md">
-          🌸 Digital Lessons Generator
+            AgenticTutor
         </h1>
 
         <div className="max-w-4xl mb-10 mx-auto">
